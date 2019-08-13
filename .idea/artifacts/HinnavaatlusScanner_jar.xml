@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="HinnavaatlusScanner:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/HinnavaatlusScanner_jar</output-path>
+    <root id="archive" name="HinnavaatlusScanner.jar">
+      <element id="module-output" name="HinnavaatlusScanner" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/jsoup-1.12.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
