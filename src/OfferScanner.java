@@ -13,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 public class OfferScanner {
     private String pageUrl;
     private String name;
+    private SystemTray tray;
+    private TrayIcon trayIcon;
     public static void main(String[] args) throws IOException {
         Scanner s = new Scanner(System.in);
         System.out.println("Sisesta toote URL:");
@@ -20,6 +22,15 @@ public class OfferScanner {
         r.pageUrl = s.nextLine();
         System.out.println("Anna teavituseks tootele nimi:");
         r.name = s.nextLine();
+        try {
+            r.tray = SystemTray.getSystemTray();
+            Image image = Toolkit.getDefaultToolkit().createImage("some-icon.png");
+            r.trayIcon = new TrayIcon(image, r.name + " Scanner");
+            r.trayIcon.setImageAutoSize(true);
+            r.tray.add(r.trayIcon);
+        } catch (Exception ex) {
+            System.err.print(ex);
+        }
         System.out.println("Sisesta uuendamise intervall minutites (täisarv):");
         int rTime = s.nextInt();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
@@ -49,7 +60,7 @@ public class OfferScanner {
             }
             if (changed) {
                 System.out.println("Uued pakkumised:\r\n");
-                r.notificate();
+                r.trayIcon.displayMessage(r.name + " Scanner", "Pakkumised on muutunud!", MessageType.WARNING);
                 now = LocalDateTime.now();
                 r.printIt(pakkumised, dtf.format(now));
                 oldPakkumised = pakkumised;
@@ -91,19 +102,5 @@ public class OfferScanner {
             }
         }
         return infos;
-    }
-
-    private void notificate() {
-        try {
-            SystemTray tray = SystemTray.getSystemTray();
-            Image image = Toolkit.getDefaultToolkit().createImage("some-icon.png");
-            TrayIcon trayIcon = new TrayIcon(image, "Scanner pakkumised");
-            trayIcon.setImageAutoSize(true);
-            trayIcon.setToolTip("Scanner teavitus");
-            tray.add(trayIcon);
-            trayIcon.displayMessage(name + " Scanner", "Pakkumised on muutunud!", MessageType.WARNING);
-        } catch (Exception ex) {
-            System.err.print(ex);
-        }
     }
 }
